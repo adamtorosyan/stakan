@@ -28,6 +28,7 @@ class DocMinion:
             metadata["Author"] = doc.core_properties.author
             metadata["Subject"] = doc.core_properties.subject
             metadata["Keywords"] = doc.core_properties.keywords
+            metadata["Pages"] = len(doc.element.xpath("//w:sectPr"))
 
             return metadata
         except Exception as e:
@@ -45,6 +46,7 @@ class DocMinion:
             metadata["Author"] = doc.BuiltInDocumentProperties("Author").Value
             metadata["Subject"] = doc.BuiltInDocumentProperties("Subject").Value
             metadata["Keywords"] = doc.BuiltInDocumentProperties("Keywords").Value
+            metadata["Pages"] = doc.ComputeStatistics(2)
 
             doc.Close()
             word.Quit()
