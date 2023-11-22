@@ -29,7 +29,7 @@ def process_and_create_database(directory):
 
 
 def main():
-    directory = "C:/Users/WarSa/OneDrive/Рабочий стол/www.msu.ru"
+    directory = r"C:\Users\WarSa\OneDrive\Рабочий стол\www.msu.ru"
     process_and_create_database(directory)
 
 

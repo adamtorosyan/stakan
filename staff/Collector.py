@@ -26,11 +26,12 @@ class Collector:
     """Now with csv module we are able to create a csv database of all files in directory"""
 
     def make_database(self, data):
+        # Determine all possible keys from the data
         all_keys = set()
-
         for entry in data:
             all_keys.update(entry.keys())
 
+        # Define a common set of keys for the CSV columns
         csv_columns = [
             "File Name",
             "File Size",
@@ -46,7 +47,15 @@ class Collector:
             "Height",
             "Format",
             "Mode",
-            "error",
+            "Alpha Channel",
+            "Orientation",
+            "Bits per Channel",
+            "Compression",
+            "Enhancement",
+            "GPS Coordinates",
+            "Camera Model",
+            "Camera Brand",
+            "Date Taken",
         ]
 
         with open(self.csv_path, "w", newline="", encoding="utf-8") as csv_file:
@@ -54,8 +63,9 @@ class Collector:
             writer.writeheader()
 
             for entry in data:
-                unified_entry = {key: None for key in csv_columns}
-                unified_entry.update(entry)
+                unified_entry = {
+                    key: entry.get(key, None) for key in csv_columns if key != "error"
+                }
                 writer.writerow(unified_entry)
 
         print("CSV file 'data.csv' has been created.")
