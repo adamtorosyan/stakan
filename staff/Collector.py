@@ -5,9 +5,6 @@ from os.path import join
 
 
 class Collector:
-    """Class properties. In class properties we add directory we want to scan
-    and path to our future database"""
-
     def __init__(self, directory):
         self.directory = directory
         absolute_path = os.path.dirname(__file__)
@@ -15,23 +12,18 @@ class Collector:
         relative_path = "data\\data.csv"
         self.csv_path = os.path.join(parent_directory, relative_path)
 
-    """Data collection in specified directory. OS module helps us to create nested list of desired info"""
-
     def get_path(self):
         for root, _, files in os.walk(self.directory):
             for name in files:
                 path = join(root, name)
                 yield path
 
-    """Now with csv module we are able to create a csv database of all files in directory"""
-
     def make_database(self, data):
-        # Determine all possible keys from the data
         all_keys = set()
+
         for entry in data:
             all_keys.update(entry.keys())
 
-        # Define a common set of keys for the CSV columns
         csv_columns = [
             "File Name",
             "File Size",
@@ -47,15 +39,13 @@ class Collector:
             "Height",
             "Format",
             "Mode",
-            "Alpha Channel",
-            "Orientation",
-            "Bits per Channel",
+            "Channels",
+            "Bit Depth",
             "Compression",
-            "Enhancement",
-            "GPS Coordinates",
-            "Camera Model",
-            "Camera Brand",
-            "Date Taken",
+            "ICC Profile",
+            "Orientation",
+            "EXIF Data",
+            "error",
         ]
 
         with open(self.csv_path, "w", newline="", encoding="utf-8") as csv_file:
@@ -63,9 +53,8 @@ class Collector:
             writer.writeheader()
 
             for entry in data:
-                unified_entry = {
-                    key: entry.get(key, None) for key in csv_columns if key != "error"
-                }
+                unified_entry = {key: None for key in csv_columns}
+                unified_entry.update(entry)
                 writer.writerow(unified_entry)
 
         print("CSV file 'data.csv' has been created.")

@@ -46,7 +46,7 @@ class DocMinion:
             metadata["Author"] = doc.BuiltInDocumentProperties("Author").Value
             metadata["Subject"] = doc.BuiltInDocumentProperties("Subject").Value
             metadata["Keywords"] = doc.BuiltInDocumentProperties("Keywords").Value
-            metadata["Pages"] = doc.ComputeStatistics(2)
+            metadata["Pages"] = doc.Paragraphs.Count
 
             doc.Close()
             word.Quit()
