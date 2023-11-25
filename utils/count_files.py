@@ -1,22 +1,25 @@
+import sqlite3
 import sys
 
 import pandas as pd
 
 sys.path = ["C:/stakan"] + sys.path
-
 from staff.Collector import Collector
 
 directory = "c:/"
 a = Collector(directory)
-path = a.get_csv_path()
+db_path = a.get_sqlite_path()
 
 
 def count_files(path):
     if a.updated_db():
         return "Update database!"
     else:
-        df = pd.read_csv(path)
-        return f"Amount of files on computer: {len(df)}"
+        connection = sqlite3.connect(path)
+        query = "SELECT COUNT(*) FROM metadata"
+        result = connection.execute(query).fetchone()[0]
+        connection.close()
+        return f"Amount of files on computer: {result}"
 
 
-print(count_files(path))
+print(count_files(db_path))

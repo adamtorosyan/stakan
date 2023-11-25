@@ -1,3 +1,4 @@
+import sqlite3
 import sys
 
 import pandas as pd
@@ -7,26 +8,20 @@ from staff.Collector import Collector
 
 directory = "c:/"
 a = Collector(directory)
-path = a.get_csv_path()
-
-
-def top_10_files(path):
-    if a.updated_db():
-        return "Update database!"
-    else:
-        df = pd.read_csv(path)
-        top_10 = df.nlargest(10, "File Size")
-        return top_10
+db_path = a.get_sqlite_path()
 
 
 def show_top_10_files(path):
     if a.updated_db():
         yield "Update database!"
     else:
-        file_info = top_10_files(path)
-        for i, (_, row) in enumerate(file_info.iterrows()):  # type: ignore
-            yield (f'{i+1}) File "{row["File Name"]}": size {row["File Size"]} bytes')
+        connection = sqlite3.connect(path)
+        query = "SELECT * FROM metadata ORDER BY file_size DESC LIMIT 10"
+        result = connection.execute(query).fetchall()
+        connection.close()
+        for i, row in enumerate(result):  # type: ignore
+            yield (f'{i+1}) File "{row[1]}": size {row[2]} bytes')
 
 
-for file in show_top_10_files(path):
+for file in show_top_10_files(db_path):
     print(file)

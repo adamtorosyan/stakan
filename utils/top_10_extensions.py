@@ -1,27 +1,30 @@
+import sqlite3
 import sys
-from collections import Counter
-from os.path import splitext
 
 sys.path = ["C:/stakan"] + sys.path
-import pandas as pd
 from staff.Collector import Collector
 
 directory = "c:/"
 a = Collector(directory)
-path = a.get_csv_path()
+db_path = a.get_sqlite_path()
 
 
 def show_top_ex(path):
     if a.updated_db():
         return "Update database!"
     else:
-        df = pd.read_csv(path)
-        extensions = df["File Path"].apply(
-            lambda x: x.split(".")[-1] if "." in x else "absent"
-        )
-        top = extensions.value_counts().head(10)
-        return top
+        connection = sqlite3.connect(path)
+        query = """
+            SELECT SUBSTR(file_name, INSTR(file_name, '.') + 1) AS extension, COUNT(*) 
+            FROM metadata 
+            GROUP BY extension 
+            ORDER BY COUNT(*) DESC 
+            LIMIT 10
+        """
+        result = connection.execute(query).fetchall()
+        connection.close()
+        return result
 
 
-for i, (extension, count) in enumerate(show_top_ex(path).items()):  # type: ignore
+for i, (extension, count) in enumerate(show_top_ex(db_path)):  # type: ignore
     print(f"{i + 1}) Extension {extension} in an amount of {count} pieces")
