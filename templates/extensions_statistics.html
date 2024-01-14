@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extensions Statistics</title>
+</head>
+<body>
+    <h1>Extensions Statistics</h1>
+    <table border="1">
+        <tr>
+            <th>Extension</th>
+            <th>Count</th>
+        </tr>
+        {% for extension, count in statistics %}
+            <tr>
+                <td>{{ extension }}</td>
+                <td>{{ count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>
